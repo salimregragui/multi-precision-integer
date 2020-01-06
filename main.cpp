@@ -14,14 +14,16 @@ using namespace std;
 
 int main()
 {
-    Mint a("10000000");
+    Mint a("2");
     a.afficher();
 
-    Mint b("1000000000");
+    Mint b("12345678912345678963214785");
     b.afficher();
-
-    Mint c = a * b;
-    c.afficher();
+	Mint c=a++;
+	a.afficher();
+	c.afficher();
+  //  Mint c = a * b;
+  //  c.afficher();
 
     //Mint q = a * b;
     //cout<<"\nTotal multiplication : ";

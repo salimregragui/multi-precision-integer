@@ -71,7 +71,7 @@ Mint operator+(Mint m1, Mint m2){
     int taille = m1.taille_effective > m2.taille_effective ? m1.taille_effective : m2.taille_effective;
     int petite_taille = m1.taille_effective > m2.taille_effective ? m2.taille_effective : m1.taille_effective;
 
-    Mint used_mint = "";
+    Mint used_mint ="";
 
     used_mint.mint = new int[taille];
     used_mint.taille_effective = taille;
@@ -338,4 +338,15 @@ float Mint::toFloat(){
     }
 
     return nbr_converti;
+}
+Mint& Mint::operator ++()
+{
+	*this= *this+1;
+	return *this;	
+}
+Mint Mint::operator ++(int)
+{
+	Mint result= *this;
+	++(*this);
+	return result;
 }

@@ -9,7 +9,7 @@ class Mint
 {
     public:
         Mint(int);
-        Mint(char*);
+        Mint(char *);
         Mint(const Mint&);
         void afficher();
 
@@ -18,6 +18,8 @@ class Mint
         friend Mint operator*(Mint, Mint);
         Mint& operator+=(Mint);
         Mint& operator+=(int);
+        Mint& operator ++();
+        Mint operator ++(int);
         friend bool operator<(Mint, Mint);
         friend bool operator>(Mint, Mint);
         friend bool operator<=(Mint, Mint);
