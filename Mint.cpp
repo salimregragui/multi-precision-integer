@@ -24,29 +24,16 @@ Mint::Mint(int nbr)
 Mint::Mint(char* nbr)
 {
     int taille = 0;
-    while(nbr[++taille]){
+    while(nbr[++taille]){ //on calcule la taille de la chaine
     }
 
-    bool found_error = false;
-    /*for(int i = 0; i < taille; i++){
-        if(nbr[i] - '0' < 0 || nbr[i] - '0' > 9){
-            cout<<"Error !!"<<endl;
-            found_error = true;
-            break;
-        }
-    }*/
+    taille_effective = taille;
+    mint = new int[taille];
 
-    if(!found_error){
-        taille_effective = taille;
-        mint = new int[taille];
-
-        for(int i = 0; i < taille_effective; i++){
-            mint[i] = nbr[i] - '0';
-        }
-    }else {
-        taille_effective = 0;
-        mint = new int[1];
+    for(int i = 0; i < taille_effective; i++){
+        mint[i] = nbr[i] - '0'; //cette operation permet de transformer un nombre char en nombre int
     }
+
 }
 
 Mint::Mint(const Mint& cpy){
@@ -55,8 +42,6 @@ Mint::Mint(const Mint& cpy){
     for(int i=0; i<taille_effective; i++){
         mint[i] = cpy.mint[i];
     }
-    /*cout<<"\nMint copied : "<<endl;
-    afficher();*/
 }
 
 void Mint::afficher(){
@@ -68,25 +53,31 @@ void Mint::afficher(){
 
 
 Mint operator+(Mint m1, Mint m2){
+    //On selectionne la taille du mint le plus grand et du plus petit.
     int taille = m1.taille_effective > m2.taille_effective ? m1.taille_effective : m2.taille_effective;
     int petite_taille = m1.taille_effective > m2.taille_effective ? m2.taille_effective : m1.taille_effective;
 
-    Mint used_mint ="";
-
-    used_mint.mint = new int[taille];
+    Mint used_mint = ""; //ceci est le mint dans lequel on stock l'addition des 2 mints entrer
+    used_mint.mint = new int[taille]; //sa taille sera celle du plus grand mint des 2
     used_mint.taille_effective = taille;
 
     int retenue = 0;
+
+    //on execute une boucle qui par de la fin du grand mint jusqu'a la fin du petit mint
     for(int i = taille - 1, j = petite_taille - 1 ; i >= taille - petite_taille; i--){
         if(m1.taille_effective > m2.taille_effective){
+            //si l'addition du nbr courant de m1 et de m2 + la retenue est superieur a 10
             if((m1.mint[i] + m2.mint[j]) + retenue >= 10){
+                //on stock le reste de la division par 10 dans le nouveau mint et le quotient dans la retenue
                 used_mint.mint[i] = (m1.mint[i] + m2.mint[j] + retenue) % 10;
                 retenue = (m1.mint[i] + m2.mint[j] + retenue) / 10;
             }else {
+                //sinon on stock tout dans le nouveau mint et la retenue devient 0
                 used_mint.mint[i] = m1.mint[i] + m2.mint[j] + retenue;
                 retenue = 0;
             }
         }else{
+            //le meme traitement que le if sauf pour cette fois le cas de m2 >= m1
             if((m1.mint[j] + m2.mint[i]) + retenue >= 10){
                 used_mint.mint[i] = (m1.mint[j] + m2.mint[i] + retenue) % 10;
                 retenue = (m1.mint[j] + m2.mint[i] + retenue) / 10;
@@ -99,7 +90,9 @@ Mint operator+(Mint m1, Mint m2){
         j--;
     }
 
+    //si on a un cas ou un mint est superieur a l'autre en taille (exp : 1500 + 10)
     if(petite_taille > 0 && petite_taille < taille){
+        //on effectue une boucle qui stockera le reste des nbr du mint le plus grand dans le nouveau mint
         for(int i = taille - petite_taille - 1; i >= 0 ; i--){
             if(m1.taille_effective > m2.taille_effective){
                 if((m1.mint[i] + retenue) >= 10){
@@ -121,9 +114,11 @@ Mint operator+(Mint m1, Mint m2){
 
         }
     }
+
+    //si apres avoir effectuer l'addition des 2 mints bit par bit on se retrouve avec une retenue superieure a 0
     if(retenue != 0){
         taille++;
-        Mint last_mint = "";
+        Mint last_mint = ""; //on creer un nouveau mint qui stockera le mint de l'addition + le bit de la retenue
         last_mint.mint = new int[taille];
         last_mint.taille_effective = taille;
 
@@ -143,23 +138,31 @@ Mint operator+(Mint m1, Mint m2){
 }
 
 Mint operator* (Mint m1, Mint m2){
+    //On selectionne la taille du mint le plus grand et du plus petit.
     int taille = m1.taille_effective > m2.taille_effective ? m1.taille_effective : m2.taille_effective;
     int petite_taille = m1.taille_effective > m2.taille_effective ? m2.taille_effective : m1.taille_effective;
 
-    Mint used_mint("0");
+    Mint used_mint("0"); //ceci est le mint dans lequel on stock la multiplication de 1 bit * tout l'autre mint
+                        //exemple pour 150 * 15 ce mint stockera 5 * 150 puis 1 * 150
 
     used_mint.mint = new int[taille];
     used_mint.taille_effective = taille;
 
-    Mint total_multiplication("0");
+    Mint total_multiplication("0"); //ceci est le mint dans lequel on stock toute la multiplication
 
     int retenue = 0;
-    int multiplicator = 0;
+    int multiplicator = 0; //cette variable determine le nbr de 0 a ajouter a la fin d'une multiplication calculer
+                           //exemple pour 150 * 15 dans le cas du 5 * 150 = 750
+                           //mais 1 * 150 = 1500 car 1 est le 2eme nbr du mint.
 
+    //on effectue une boucle qui parcours tous les nbrs du plus petit mint
     for(int i = petite_taille - 1; i >= 0; i--){
+        //une deuxieme boucle qui parcours tous les nbrs du grand mint
         for(int j = taille - 1; j >= 0; j--){
             if(m1.taille_effective > m2.taille_effective){
+                //si la multiplication du nbr courant de m1 et de m2 + la retenue est superieur a 10
                 if((m1.mint[j] * m2.mint[i] + retenue) >= 10){
+                    //on stock le reste de la division dans le nouveau mint et le quotient dans la retenue
                     used_mint.mint[j] = (m1.mint[j] * m2.mint[i] + retenue) % 10;
                     retenue = (m1.mint[j] * m2.mint[i] + retenue) / 10;
                 }else {
@@ -168,6 +171,7 @@ Mint operator* (Mint m1, Mint m2){
                 }
             }
             else {
+                //meme traitement que le if pour le cas du m2 >= m1
                 if((m1.mint[i] * m2.mint[j] + retenue) >= 10){
                     used_mint.mint[j] = (m1.mint[i] * m2.mint[j] + retenue) % 10;
                     retenue = (m1.mint[i] * m2.mint[j] + retenue) / 10;
@@ -178,7 +182,7 @@ Mint operator* (Mint m1, Mint m2){
             }
         }
 
-        Mint mint_retenue ("0");
+        Mint mint_retenue ("0"); //ce nouveau mint stockera le mint calculer plus la retenue restante si elle existe
         mint_retenue += used_mint;
 
         if(retenue != 0){
@@ -196,51 +200,57 @@ Mint operator* (Mint m1, Mint m2){
             }
         }
 
-        cout<<"\nMint Retenue : ";
-        mint_retenue.afficher();
-
+        //ce mint est le dernier que l'on va utiliser il stockera le mint_retenue plus les zeros a ajouter du multiplicateur
         Mint final_mint("0");
         final_mint += mint_retenue;
 
-                    cout<<"\nMint Retenue : ";
-        mint_retenue.afficher();
-
         if(multiplicator > 0){
-                cout<<"\n";
+            //si il existe des zeros a ajouter on augmente la taille du mint par ce nbrs de zeros
             final_mint.taille_effective += multiplicator;
+
+            //ensuite on effectue une boucle qui stockera le mint_retenue et les zeros a ajouter dans final_mint
             for(int mul = 0; mul < final_mint.taille_effective; mul++){
-                if(mul <= mint_retenue.taille_effective - 1){
+                if(mul <= mint_retenue.taille_effective - 1)
                     final_mint.mint[mul] = mint_retenue.mint[mul];
-                    cout<<"\ntaille mint retenue : "<<mint_retenue.taille_effective;
-                    mint_retenue.afficher();
-                    cout<<"\nfinal_mint["<<mul<<"] = "<<final_mint.mint[mul]<<"\tmint_retenue["<<mul<<"] = "<<mint_retenue.mint[mul];
-                }
+
                 else
                     final_mint.mint[mul] = 0;
 
             }
         }
 
-        //cout<<"\ntaille : "<<final_mint.taille_effective;
-        /*cout<<"\nfinal mint :";
-            final_mint.afficher();*/
+        //on ajoute le final_mint au total multiplication
+        total_multiplication += final_mint; //donc pour reprendre notre exemple precedant de 150 * 15
+                                            //on aura 5 * 150 = 750
+                                            // est 1 * 150 = 1500
+                                            //total_multiplication = 750 + 1500 = 2250
 
-        /*cout<<"\nTotal multiplication :";
-        total_multiplication.afficher();*/
-
-        //cout<<"\nTaille total multiplication avant ajout :"<<total_multiplication.taille_effective;
-        final_mint.afficher();
-        /*cout<<"\n+";
-        total_multiplication.afficher();*/
-        total_multiplication += final_mint;
-
-        /*out<<"\nNouveau Total multiplication :";
-        total_multiplication.afficher();*/
-        //cout<<"\nTaille total multiplication :"<<total_multiplication.taille_effective;
+        //on incremente le multiplicateur car on passe a un nouveau nombre
         multiplicator++;
     }
 
     return total_multiplication;
+}
+
+Mint operator*(Mint m1, int nbr){
+    Mint m2(nbr);
+    Mint  result = m1 * m2;
+
+    return result;
+}
+
+Mint& Mint::operator*=(Mint m2){
+    *this = *this * m2;
+
+    return *this;
+}
+
+Mint& Mint::operator*=(int nbr){
+    Mint m2(nbr);
+
+    *this = *this * m2;
+
+    return *this;
 }
 
 Mint& Mint::operator+=(Mint m2){
@@ -257,7 +267,7 @@ Mint operator+(Mint m1, int nbr){
 }
 
 Mint& Mint::operator+=(int nbr){
-    Mint q = Mint(nbr);
+    Mint q(nbr);
     Mint d = "";
     *this = *this + q;
 
@@ -339,14 +349,16 @@ float Mint::toFloat(){
 
     return nbr_converti;
 }
-Mint& Mint::operator ++()
+
+Mint& Mint::operator++()
 {
 	*this= *this+1;
-	return *this;	
+	return *this;
 }
-Mint Mint::operator ++(int)
+Mint Mint::operator++(int)
 {
-	Mint result= *this;
+	Mint result = *this;
 	++(*this);
+
 	return result;
 }
