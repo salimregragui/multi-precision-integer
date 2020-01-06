@@ -3,51 +3,40 @@
 
 using namespace std;
 
-/*int multiplication(int n) {
-    int total = 0;
-    for(int i = 1; i <= 700; i++){
-        total += n;
+//fonction qui permet de stocker la factorielle d'un nombre dans un mint
+Mint factorielle(int n) {
+    Mint total("1");
+    for(int i = 1; i <= n; i++){
+        total = total * i;
     }
 
     return total;
-}*/
+}
 
 int main()
 {
-    Mint a("2");
+    Mint a("1259755");
     a.afficher();
 
-    Mint b("12345678912345678963214785");
+    Mint b("11949585285");
     b.afficher();
-	Mint c=a++;
-	a.afficher();
-	c.afficher();
-  //  Mint c = a * b;
-  //  c.afficher();
 
-    //Mint q = a * b;
-    //cout<<"\nTotal multiplication : ";
-    //q.afficher();
-
-
-    /*Mint c = "198598168945150";
+    Mint c = a * b;
+    cout<<"\nTotal multiplication : ";
     c.afficher();
 
-    Mint d = b;
-    d.afficher();*/
 
+    Mint d = ++b;
+    d.afficher();
 
-    /*Mint q = "1250";
-    q = a + b;
-    q.afficher();*/
+    Mint q = factorielle(60);
+    cout<<"\n60 factorielle est :";
+    q.afficher();
 
-    /*a += b;
-    a.afficher();*/
-
-    /*if(a > b)
-        printf("\na est superieur b");
+    if(a <= b)
+        printf("\na est inferieur ou egal b");
     else
-        printf("\na est inferieur b");*/
+        printf("\na est superieur b");
 
     return 0;
 }
